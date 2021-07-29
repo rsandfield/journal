@@ -1,7 +1,6 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:journal/widgets/options.dart';
+import 'package:journal/widgets/rating_form_field.dart';
 
 class JournalEntryCreationScreen extends StatelessWidget {
   const JournalEntryCreationScreen({Key? key}) : super(key: key);
@@ -26,10 +25,24 @@ class JournalEntryCreationScreen extends StatelessWidget {
                   return null;
                 },
               ),
-              RatingFormField(),
+              Row(
+                children: [
+                  Expanded(
+                    child: InputDatePickerFormField(
+                      firstDate: DateTime.utc(10, 4, 20),
+                      lastDate: DateTime.utc(3000, 9, 13),
+                      initialDate: DateTime.now(),
+                    ),
+                  ),
+                  Expanded(
+                    child: Center(child: RatingFormField()),
+                  ),
+                ],
+              ),
               TextFormField(
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
+                minLines: 5,
                 decoration: const InputDecoration(labelText: "Text"),
                 validator: (value) {
                   if(value == null || value.isEmpty) {
@@ -43,67 +56,5 @@ class JournalEntryCreationScreen extends StatelessWidget {
         ),
         endDrawer: const OptionsWidget(),
     );
-  }
-}
-
-class RatingFormField extends StatefulWidget {
-  final List<bool> _rating = [false, true, true, false, false, false];
-  late final List<Widget> _buttons;
-
-  RatingFormField({Key? key}) : super(key: key) {
-    _buttons = List<Widget>.generate(_rating.length, (i) {
-      if (i == 0) {
-        return _RatingFormStar(checked: _rating[i], zero: true);
-      }
-      else {
-        return _RatingFormStar(checked: _rating[i]);
-      }
-    });
-  }
-
-  @override
-  State<RatingFormField> createState() => _RatingFormFieldState();
-}
-
-class _RatingFormFieldState extends State<RatingFormField> {
-
-  @override
-  Widget build(BuildContext context) {
-    return ToggleButtons(
-      children: widget._buttons,
-      isSelected: widget._rating,
-      onPressed: (int index) => _buttonPressed(index)
-    );
-  }
-
-  void _buttonPressed(int index) {
-    setState(() {
-      widget._rating[0] = index == 0;
-      widget._buttons[0] = _RatingFormStar(checked: widget._rating[0], zero: true);
-
-      for (int i = 1; i < widget._rating.length; i++) {
-        widget._rating[i] = index >= i;
-        widget._buttons[i] = _RatingFormStar(checked: widget._rating[i]);
-      }
-    });
-  }
-}
-
-class _RatingFormStar extends StatelessWidget {
-  final bool checked;
-  final bool zero;
-  const _RatingFormStar({this.checked = false, this.zero = false, Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    if(zero) {
-      return const Icon(Icons.radio_button_unchecked);
-    }
-    else if(checked) {
-      return const Icon(Icons.star);
-    }
-    else {
-      return const Icon(Icons.star_outline);
-    }
   }
 }

@@ -12,11 +12,12 @@ class Journal {
 
   void initializeDatabase() async {
     database = openDatabase(
-        join(await getDatabasesPath(), 'journal_database.db'),
+        join(await getDatabasesPath(), 'journal.sqlite3.db'),
         onCreate: (db, version) {
           return db.execute(
-              'CREATE TABLE $tableName(id INTEGER PRIMARY KEY, title TEXT,'
-                  'body TEXT, rating INT, date INT'
+              'CREATE TABLE IF NOT EXISTS$tableName(id INTEGER PRIMARY KEY '
+                  'AUTOINCREMENT, title TEXT NOT NULL, body TEXT NOT NULL, '
+                  'rating INT NOT NULL, date TEXT NOT NULL'
           );
         },
         version: 1
