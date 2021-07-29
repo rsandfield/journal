@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:theme_mode_handler/theme_mode_handler.dart';
+import 'package:journal/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OptionsWidget extends StatelessWidget {
   const OptionsWidget({Key? key}) : super(key: key);
@@ -13,7 +14,21 @@ class OptionsWidget extends StatelessWidget {
   }
 }
 
+class OptionsOpenWidget extends StatelessWidget {
+  const OptionsOpenWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialButton(
+      child: const Icon(Icons.settings),
+      onPressed: () => Scaffold.of(context).openEndDrawer(),
+    );
+  }
+}
+
+
 class ThemeModeSelectWidget extends StatefulWidget {
+
   const ThemeModeSelectWidget({Key? key}) : super(key: key);
 
   @override
@@ -21,14 +36,23 @@ class ThemeModeSelectWidget extends StatefulWidget {
 }
 
 class _ThemeModeSelectWidgetState extends State<ThemeModeSelectWidget> {
+  JournalAppState? appState;
+
   final List<Widget> _buttons = const [
     Icon(Icons.light_mode),
     Icon(Icons.dark_mode)
   ];
-  final List<bool> _isSelected = [true, false];
+  List<bool> get _isSelected {
+    return [
+      appState?.themeMode == ThemeMode.light,
+      appState?.themeMode == ThemeMode.dark,
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
+    appState ??= context.findAncestorStateOfType<JournalAppState>();
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,11 +71,11 @@ class _ThemeModeSelectWidgetState extends State<ThemeModeSelectWidget> {
       if(index == 0) {
         _isSelected[0] = true;
         _isSelected[1] = false;
-        ThemeModeHandler.of(context)?.saveThemeMode(ThemeMode.light);
+        appState?.themeMode = ThemeMode.light;
       } else {
         _isSelected[0] = false;
         _isSelected[1] = true;
-        ThemeModeHandler.of(context)?.saveThemeMode(ThemeMode.dark);
+        appState?.themeMode = ThemeMode.dark;
       }
     });
   }
