@@ -6,7 +6,14 @@ class Journal {
   static const tableName = "journal_entries";
   late final Future<Database> database;
 
-  Journal() {
+  //https://stackoverflow.com/questions/12649573/how-do-you-build-a-singleton-in-dart
+  static final Journal _singleton = Journal._internal();
+
+  factory Journal() {
+    return _singleton;
+  }
+
+  Journal._internal() {
     initializeDatabase();
   }
 
@@ -73,13 +80,19 @@ class Journal {
 }
 
 class JournalEntry {
-  int id;
+  int? id;
   String title;
   String body;
   int rating;
   DateTime date;
 
   JournalEntry (this.id, this.title, this.body, this.rating, this.date);
+
+  JournalEntry.empty () :
+    title = '',
+    body = '',
+    rating = 0,
+    date = DateTime.fromMicrosecondsSinceEpoch(0);
 
   Map<String, dynamic> toMap() {
     return {
