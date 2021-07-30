@@ -12,7 +12,7 @@ void main() async {
 class JournalApp extends StatefulWidget {
   final Map<String, Widget Function(BuildContext)> routes = {
     '/':  (context) => const JournalWidget(),
-    '/create': (context) => const JournalEntryCreationScreen()
+    '/create': (context) => JournalEntryCreationScreen()
   };
 
   final SharedPreferences preferences;

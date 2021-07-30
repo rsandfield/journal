@@ -35,10 +35,6 @@ class _JournalWidgetState extends State<JournalWidget> {
     );
   }
 
-  void _toggleEndDrawer() {
-    _scaffoldKey.currentState?.openDrawer();
-  }
-
   Widget buildEntries() {
     return FutureBuilder <List <JournalEntry>>(
       future: journal.journalEntries(),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:journal/main.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class OptionsWidget extends StatelessWidget {
   const OptionsWidget({Key? key}) : super(key: key);
