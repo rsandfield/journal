@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class RatingFormField extends FormField<int> {
   final int starCount;
 
-  RatingFormField({this.starCount = 5, Key? key}) : super(
+  RatingFormField({this.starCount = 5, FormFieldSetter<int>? onSaved, Key? key}) : super(
       builder: (FormFieldState<int> state) {
         return ToggleButtons(
           children: List<Widget>.generate(starCount + 1, (index) {
@@ -18,7 +18,9 @@ class RatingFormField extends FormField<int> {
           }),
           isSelected: List<bool>.generate(starCount + 1, (index) => false),
           onPressed: (int index) => state.didChange(index),
-        );},
+        );
+      },
+      onSaved: onSaved,
       key: key
   );
 }
