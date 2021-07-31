@@ -3,8 +3,9 @@ import 'package:journal/models/journal.dart';
 import 'package:journal/widgets/options.dart';
 import 'package:journal/widgets/rating_form_field.dart';
 
+final _formKey = GlobalKey<FormState>();
+
 class JournalEntryCreationScreen extends StatelessWidget {
-  final formKey = GlobalKey<FormState>();
   final journalEntry = JournalEntry.empty();
 
   JournalEntryCreationScreen({Key? key}) :
@@ -21,7 +22,7 @@ class JournalEntryCreationScreen extends StatelessWidget {
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Form(
-            key: formKey,
+            key: _formKey,
             child: Column(
               children: [
                 TextFormField(
@@ -72,8 +73,8 @@ class JournalEntryCreationScreen extends StatelessWidget {
                 ElevatedButton(
                   child: const Text('Submit'),
                   onPressed: () {
-                    if(formKey.currentState?.validate() ?? false) {
-                      formKey.currentState?.save();
+                    if(_formKey.currentState?.validate() ?? false) {
+                      _formKey.currentState?.save();
                       Journal().insertJournalEntry(journalEntry);
                       Navigator.of(context).pop();
                     }

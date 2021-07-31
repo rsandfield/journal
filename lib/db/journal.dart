@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -9,25 +10,21 @@ class Journal {
   //https://stackoverflow.com/questions/12649573/how-do-you-build-a-singleton-in-dart
   static final Journal _singleton = Journal._internal();
 
+  Journal._internal();
+
   factory Journal() {
     return _singleton;
   }
 
-  Journal._internal() {
-    initializeDatabase();
-  }
-
-  void initializeDatabase() async {
+  Future<void> initializeDatabase() async {
+    String path = await getDatabasesPath();
+    String build = await rootBundle.loadString('assets/create_table.txt');
     database = openDatabase(
-        join(await getDatabasesPath(), 'journal.sqlite3.db'),
-        onCreate: (db, version) {
-          return db.execute(
-              'CREATE TABLE IF NOT EXISTS$tableName(id INTEGER PRIMARY KEY '
-                  'AUTOINCREMENT, title TEXT NOT NULL, body TEXT NOT NULL, '
-                  'rating INT NOT NULL, date TEXT NOT NULL'
-          );
-        },
-        version: 1
+      join(path, 'journal.sqlite3.db'),
+      onCreate: (db, version) {
+        return db.execute(build);
+      },
+      version: 1
     );
   }
 
@@ -36,15 +33,15 @@ class Journal {
 
     final List<Map<String, dynamic>> maps = await db.query(tableName);
 
-    return List.generate(maps.length, (index) {
+    return maps.map<JournalEntry>((entry) {
       return JournalEntry(
-          maps[index]['id'],
-          maps[index]['title'],
-          maps[index]['body'],
-          maps[index]['rating'],
-          maps[index]['date']
+          entry['id'],
+          entry['title'],
+          entry['body'],
+          entry['rating'],
+          DateTime.parse(entry['date'])
       );
-    });
+    }).toList();
   }
 
   Future<void> insertJournalEntry(JournalEntry entry) async {
@@ -95,13 +92,14 @@ class JournalEntry {
     date = DateTime.fromMicrosecondsSinceEpoch(0);
 
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
+    Map<String, dynamic> map = {
       'title': title,
       'body': body,
       'rating': rating,
-      'date': date,
+      'date': date.toString(),
     };
+    if(id != null) map['id'] = id;
+    return map;
   }
 
   @override
