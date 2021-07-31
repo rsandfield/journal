@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:journal/models/journal.dart';
+import 'package:journal/db/journal.dart';
+import 'package:journal/models/journal_entry.dart';
 import 'package:journal/widgets/options.dart';
 import 'package:journal/widgets/rating_form_field.dart';
 

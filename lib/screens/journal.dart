@@ -12,6 +12,7 @@ class JournalWidget extends StatefulWidget {
 class _JournalWidgetState extends State<JournalWidget> {
   // https://stackoverflow.com/questions/47435231/open-drawer-on-clicking-appbar
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<HeadlineListState> _headlineKey = GlobalKey<HeadlineListState>();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class _JournalWidgetState extends State<JournalWidget> {
         title: const Text("Journal"),
         actions: const [OptionsOpenWidget()],
       ),
-      body: const HeadlineList(),
+      body: HeadlineList(key: _headlineKey),
       endDrawer: const OptionsWidget(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -36,22 +37,4 @@ class _JournalWidgetState extends State<JournalWidget> {
 
 
 
-class RatingWidget extends StatelessWidget {
-  final int rating;
-
-  const RatingWidget(this.rating, {Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: List<Icon>.generate(5, (i) {
-        if (i < rating) {
-          return const Icon(Icons.star);
-        } else {
-          return const Icon(Icons.star_outline);
-        }
-      }),
-    );
-  }
-}
 

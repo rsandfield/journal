@@ -19,7 +19,10 @@ class OptionsOpenWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      child: const Icon(Icons.settings),
+      child: Icon(
+          Icons.settings,
+          color: Theme.of(context).colorScheme.onPrimary,
+      ),
       onPressed: () => Scaffold.of(context).openEndDrawer(),
     );
   }
@@ -52,16 +55,21 @@ class _ThemeModeSelectWidgetState extends State<ThemeModeSelectWidget> {
   Widget build(BuildContext context) {
     appState ??= context.findAncestorStateOfType<JournalAppState>();
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ToggleButtons(
-          children: _buttons,
-          isSelected: _isSelected,
-          onPressed: (int index) => _buttonPressed(index)
+    return Drawer(
+      child: Center(
+        child: Column(
+          children: [
+            const SizedBox(height: 15,),
+            Text("Theme mode select:", style: Theme.of(context).textTheme.headline6),
+            const SizedBox(height: 15,),
+            ToggleButtons(
+              children: _buttons,
+              isSelected: _isSelected,
+              onPressed: (int index) => _buttonPressed(index)
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 

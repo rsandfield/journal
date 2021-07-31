@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:journal/db/journal.dart';
 import 'package:journal/themes.dart';
-import 'package:journal/widgets/journal.dart';
-import 'package:journal/widgets/journal_entry_create.dart';
+import 'package:journal/screens/journal.dart';
+import 'package:journal/screens/new_entry.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
-
-  runApp(JournalApp(await SharedPreferences.getInstance()));
+  WidgetsFlutterBinding.ensureInitialized();
+  await Journal().initializeDatabase();
+  SharedPreferences.getInstance().then((prefs) => runApp(JournalApp(prefs)));
 }
 
 class JournalApp extends StatefulWidget {
@@ -32,7 +34,7 @@ class JournalAppState extends State<JournalApp> {
       theme: Themes.lightMode,
       darkTheme: Themes.darkMode,
       themeMode: themeMode,
-      initialRoute: '/create',
+      initialRoute: '/',
       routes: widget.routes,
     );
   }
