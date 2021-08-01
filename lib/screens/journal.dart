@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:journal/screens/entry_display.dart';
 import 'package:journal/widgets/journal_headlines.dart';
 import 'package:journal/widgets/options.dart';
 
 class JournalScreen extends StatefulWidget {
-  final GlobalKey<HeadlineListState>? headlines;
-  const JournalScreen({this.headlines, Key? key}) : super(key: key);
+  final GlobalKey<HeadlineListState> headlines;
+  const JournalScreen({required this.headlines, Key? key}) : super(key: key);
 
   @override
   State<JournalScreen> createState() => _JournalScreenState();
@@ -22,7 +23,7 @@ class _JournalScreenState extends State<JournalScreen> {
         title: const Text("Journal"),
         actions: const [OptionsOpenWidget()],
       ),
-      body: HeadlineList(key: widget.headlines),
+      body: _buildLayout(context),
       endDrawer: const OptionsWidget(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -33,8 +34,83 @@ class _JournalScreenState extends State<JournalScreen> {
       ),
     );
   }
+
+  Widget _buildLayout(BuildContext context) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          if(constraints.maxWidth > 700) {
+            return JournalEntryDisplayDual(
+              headlines: widget.headlines,
+              constraints: constraints,
+            );
+          } else {
+            return HeadlineList(
+                key: widget.headlines,
+              onTap: (int id) => Navigator.pushNamed(context, '/view',
+                  arguments: id),
+            );
+          }
+        }
+    );
+  }
 }
 
+class JournalEntryDisplayDual extends StatefulWidget {
+  final BoxConstraints constraints;
+  final GlobalKey<HeadlineListState> headlines;
 
+  const JournalEntryDisplayDual({
+    required this.headlines,
+    required this.constraints,
+    Key? key
+  }) :
+        super(key: key);
 
+  @override
+  JournalEntryDisplayDualState createState() => JournalEntryDisplayDualState();
+}
+
+class JournalEntryDisplayDualState extends State<JournalEntryDisplayDual> {
+  late JournalEntryDisplay _display;
+
+  @override
+  initState() {
+    super.initState();
+    _display = JournalEntryDisplay(
+      headlines: widget.headlines,
+      returnAction: () => changeDisplay(-1),
+      id: -1,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double displayWidth = 350;
+    return Row(
+      children: [
+        SizedBox(
+            width: widget.constraints.maxWidth - displayWidth,
+            child: HeadlineList(
+              key: widget.headlines,
+              onTap: changeDisplay,
+            )
+        ),
+        SizedBox(
+            width: displayWidth,
+            child: _display.id < 0 ? const Text("Oop.") : _display,
+        ),
+      ],
+    );
+  }
+
+  void changeDisplay(int id) {
+    setState(() {
+      _display = JournalEntryDisplay(
+        headlines: widget.headlines,
+        returnAction: () => changeDisplay(-1),
+        id: id,
+      );
+    });
+  }
+}
 

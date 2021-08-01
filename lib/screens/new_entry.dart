@@ -8,9 +8,9 @@ import 'package:journal/widgets/rating_form_field.dart';
 final _formKey = GlobalKey<FormState>();
 
 class JournalEntryAddScreen extends StatelessWidget {
-  final GlobalKey<HeadlineListState>? headlines;
+  final GlobalKey<HeadlineListState> headlines;
 
-  const JournalEntryAddScreen({this.headlines, Key? key}) :
+  const JournalEntryAddScreen({required this.headlines, Key? key}) :
         super(key: key);
 
   @override
@@ -24,9 +24,9 @@ class JournalEntryAddScreen extends StatelessWidget {
 }
 
 class JournalForm extends StatefulWidget {
-  final GlobalKey<HeadlineListState>? headlines;
+  final GlobalKey<HeadlineListState> headlines;
 
-  const JournalForm({this.headlines, Key? key}) : super(key: key);
+  const JournalForm({required this.headlines, Key? key}) : super(key: key);
 
   @override
   _JournalFormState createState() => _JournalFormState();
@@ -92,7 +92,7 @@ class _JournalFormState extends State<JournalForm> {
               if(_formKey.currentState?.validate() ?? false) {
                 _formKey.currentState?.save();
                 Journal().insertJournalEntry(JournalEntry.fromMap(journalEntry));
-                widget.headlines?.currentState?.loadJournal();
+                widget.headlines.currentState?.loadJournal();
                 Navigator.of(context).pop();
               }
             },

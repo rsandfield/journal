@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:journal/db/journal.dart';
 import 'package:journal/models/journal_entry.dart';
+import 'package:journal/screens/journal.dart';
 import 'package:journal/widgets/date_text.dart';
 import 'package:journal/widgets/welcome.dart';
 
 class HeadlineList extends StatefulWidget {
+  final GlobalKey<JournalEntryDisplayDualState>? displayKey;
+  final Function(int) onTap;
 
-  const HeadlineList({Key? key}) : super(key: key);
+  const HeadlineList({this.displayKey, required this.onTap, Key? key})
+      : super(key: key);
 
   @override
   State<HeadlineList> createState() => HeadlineListState();
@@ -24,19 +28,24 @@ class HeadlineListState extends State<HeadlineList> {
   @override
   Widget build(BuildContext context) {
     // https://www.greycastle.se/reloading-future-with-flutter-futurebuilder/
-    return FutureBuilder <List <JournalEntry>>(
+    return FutureBuilder<List<JournalEntry>>(
       future: _journalEntries,
       builder: (context, AsyncSnapshot<List<JournalEntry>> entries) {
         if (entries.connectionState != ConnectionState.done) {
-          return const WelcomeWidget();}
+          return const WelcomeWidget();
+        }
         if (entries.hasError) {
           return const WelcomeWidget();
         }
         if (entries.hasData) {
           List<JournalEntry> data = entries.data!;
           return ListView(
-            children: data.map<Widget>((journalEntry) =>
-                JournalHeadline(journalEntry: journalEntry)).toList(),
+            children: data
+                .map<JournalHeadline>((journalEntry) => JournalHeadline(
+                      journalEntry: journalEntry,
+                      onTap: () => widget.onTap(journalEntry.id!),
+                    ))
+                .toList(),
           );
         }
         return const WelcomeWidget();
@@ -53,29 +62,27 @@ class HeadlineListState extends State<HeadlineList> {
 
 class JournalHeadline extends StatelessWidget {
   final JournalEntry journalEntry;
+  final Function() onTap;
 
-  const JournalHeadline({required this.journalEntry, Key? key}) :
-        super(key: key);
+  const JournalHeadline(
+      {required this.journalEntry, required this.onTap, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
-        child: InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, '/view', arguments: journalEntry.id);
-          },
-          child: Padding(
+      child: InkWell(
+        onTap: () => onTap(),
+        child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  journalEntry.title,
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                DateText(journalEntry.date),
-              ]
-          ),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text(
+              journalEntry.title,
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            DateText(journalEntry.date),
+          ]),
         ),
       ),
     );

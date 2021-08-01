@@ -23,6 +23,7 @@ class JournalEntryDisplayScreen extends StatelessWidget {
       child: JournalEntryDisplay(
         id: args,
         headlines: headlines,
+        returnAction: () => Navigator.pop(context),
       ),
     );
   }
@@ -31,10 +32,12 @@ class JournalEntryDisplayScreen extends StatelessWidget {
 class JournalEntryDisplay extends StatelessWidget {
   final int id;
   final GlobalKey<HeadlineListState> headlines;
+  final Function returnAction;
 
   const JournalEntryDisplay({
     required this.id,
     required this.headlines,
+    required this.returnAction,
     Key? key}) :
         super(key: key);
 
@@ -47,18 +50,17 @@ class JournalEntryDisplay extends StatelessWidget {
           builder: (context, AsyncSnapshot<JournalEntry> journalEntryFuture) {
             if (journalEntryFuture.hasData) {
               JournalEntry journalEntry = journalEntryFuture.data!;
-              return _build(context, journalEntry);
+              return _buildEntry(context, journalEntry);
             } else {
-              return Text(
-                  "Sorry, journal Entry " + id.toString() + " doesn't exist.");
+              return _buildFailure(context);
             }
-          }),
-    );
+          }
+        ),
+      );
   }
 
-  Widget _build(BuildContext context, JournalEntry journalEntry) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildEntry(BuildContext context, JournalEntry journalEntry) {
+    return ListView(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -80,7 +82,7 @@ class JournalEntryDisplay extends StatelessWidget {
                                 Journal().deleteJournalEntry(journalEntry)
                                     .then((_) {
                                       headlines.currentState?.loadJournal();
-                                      Navigator.pop(context);
+                                      returnAction();
                                     });
                               }
                           )
@@ -102,4 +104,18 @@ class JournalEntryDisplay extends StatelessWidget {
       ],
     );
   }
+
+  Widget _buildFailure(BuildContext context) {
+    return Column(
+      children: [
+        Text("Sorry, journal Entry " + id.toString() + " doesn't exist."),
+        ElevatedButton(
+            onPressed: () {
+              headlines.currentState?.loadJournal();
+              returnAction();
+            },
+            child: const Text("Reload journal")),
+      ],
+    );
+    }
 }
