@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:journal/db/journal.dart';
 import 'package:journal/models/journal_entry.dart';
+import 'package:journal/widgets/confirm_action.dart';
 import 'package:journal/widgets/date_text.dart';
 import 'package:journal/widgets/journal_headlines.dart';
 import 'package:journal/widgets/journal_scaffold.dart';
@@ -67,6 +68,7 @@ class JournalEntryDisplay extends StatelessWidget {
               style: Theme.of(context).textTheme.headline6,
             ),
             IconButton(
+                icon: const Icon(Icons.delete),
                 onPressed: () {
                   showDialog(
                       context: context,
@@ -82,8 +84,9 @@ class JournalEntryDisplay extends StatelessWidget {
                                     });
                               }
                           )
-                  );
-                }, icon: const Icon(Icons.delete)),
+                    );
+                }
+            ),
           ],
         ),
         const Divider(),
@@ -96,41 +99,6 @@ class JournalEntryDisplay extends StatelessWidget {
         ),
         const Divider(),
         Text(journalEntry.body)
-      ],
-    );
-  }
-}
-
-class ConfirmAction extends StatelessWidget {
-  final String name;
-  final JournalEntry entry;
-  final Function() action;
-
-  const ConfirmAction({
-    required this.name,
-    required this.entry,
-    required this.action,
-    Key? key}) :
-        super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(name + " " + entry.title),
-      content: Text("Are you sure you want to " + name.toLowerCase() +
-        " this journal entry?"),
-      actions: [
-        ElevatedButton(
-          child: const Text("Cancel"),
-          onPressed: () => Navigator.pop(context),
-        ),
-        ElevatedButton(
-          child: const Text("Confirm"),
-          onPressed: () {
-            Navigator.pop(context);
-            action();
-          },
-        ),
       ],
     );
   }
