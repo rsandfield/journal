@@ -32,7 +32,7 @@ class HeadlineListState extends State<HeadlineList> {
       future: _journalEntries,
       builder: (context, AsyncSnapshot<List<JournalEntry>> entries) {
         if (entries.connectionState != ConnectionState.done) {
-          return const WelcomeWidget();
+          return const Text("Loading");
         }
         if (entries.hasError) {
           return const WelcomeWidget();
@@ -72,7 +72,7 @@ class JournalHeadline extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
-        onTap: () => onTap(),
+        onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child:

@@ -97,7 +97,7 @@ class JournalEntryDisplayDualState extends State<JournalEntryDisplayDual> {
         ),
         SizedBox(
             width: displayWidth,
-            child: _display.id < 0 ? const Text("Oop.") : _display,
+            child: _display.id < 0 ? const NullEntry() : _display,
         ),
       ],
     );
@@ -113,4 +113,36 @@ class JournalEntryDisplayDualState extends State<JournalEntryDisplayDual> {
     });
   }
 }
+
+class NullEntry extends StatelessWidget {
+  const NullEntry({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Welcome!",
+            style: Theme.of(context).textTheme.headline2,
+          ),
+          const SizedBox(height: 10,),
+          Text(
+            "You haven't selected a journal entry to display yet.",
+            style: Theme.of(context).textTheme.headline5,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 10,),
+          Text(
+            "Tap a headline to display its contents here.",
+            style: Theme.of(context).textTheme.headline5,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 
