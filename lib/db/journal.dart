@@ -35,14 +35,18 @@ class Journal {
     final List<Map<String, dynamic>> maps = await db.query(tableName);
 
     return maps.map<JournalEntry>((entry) {
-      return JournalEntry(
-          entry['id'],
-          entry['title'],
-          entry['body'],
-          entry['rating'],
-          DateTime.parse(entry['date'])
-      );
+      return JournalEntry.fromMap(entry);
     }).toList();
+  }
+
+  Future<JournalEntry> getJournalEntry(int id) async {
+    final db = await database;
+
+    return JournalEntry.fromMap((await db.query(
+      tableName,
+      where: 'id = ?',
+      whereArgs: [id]
+    ))[0]);
   }
 
   Future<void> insertJournalEntry(JournalEntry entry) async {

@@ -59,9 +59,15 @@ class _ThemeModeSelectWidgetState extends State<ThemeModeSelectWidget> {
       child: Center(
         child: Column(
           children: [
-            const SizedBox(height: 15,),
-            Text("Theme mode select:", style: Theme.of(context).textTheme.headline6),
-            const SizedBox(height: 15,),
+            DrawerHeader(
+                child: Text(
+                  "Settings",
+                  style: Theme.of(context).textTheme.headline5,),
+            ),
+            Text(
+              "Theme mode select:",
+              style: Theme.of(context).textTheme.headline6,
+            ),
             ToggleButtons(
               children: _buttons,
               isSelected: _isSelected,

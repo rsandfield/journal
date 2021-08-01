@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:journal/widgets/journal_headlines.dart';
 import 'package:journal/widgets/options.dart';
 
-class JournalWidget extends StatefulWidget {
-  const JournalWidget({Key? key}) : super(key: key);
+class JournalScreen extends StatefulWidget {
+  final GlobalKey<HeadlineListState>? headlines;
+  const JournalScreen({this.headlines, Key? key}) : super(key: key);
 
   @override
-  State<JournalWidget> createState() => _JournalWidgetState();
+  State<JournalScreen> createState() => _JournalScreenState();
 }
 
-class _JournalWidgetState extends State<JournalWidget> {
+class _JournalScreenState extends State<JournalScreen> {
   // https://stackoverflow.com/questions/47435231/open-drawer-on-clicking-appbar
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final GlobalKey<HeadlineListState> _headlineKey = GlobalKey<HeadlineListState>();
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class _JournalWidgetState extends State<JournalWidget> {
         title: const Text("Journal"),
         actions: const [OptionsOpenWidget()],
       ),
-      body: HeadlineList(key: _headlineKey),
+      body: HeadlineList(key: widget.headlines),
       endDrawer: const OptionsWidget(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

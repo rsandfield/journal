@@ -7,11 +7,12 @@ class JournalEntry {
 
   JournalEntry (this.id, this.title, this.body, this.rating, this.date);
 
-  JournalEntry.empty () :
-        title = '',
-        body = '',
-        rating = 0,
-        date = DateTime.fromMicrosecondsSinceEpoch(0);
+  JournalEntry.fromMap(Map<String, dynamic> map) :
+        id = map['id'],
+        title = map['title'],
+        body = map['body'],
+        rating = map['rating'],
+        date = map['date'] is DateTime ? map['date'] : DateTime.parse(map['date']);
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:journal/db/journal.dart';
 import 'package:journal/models/journal_entry.dart';
+import 'package:journal/widgets/date_text.dart';
 import 'package:journal/widgets/welcome.dart';
 
 class HeadlineList extends StatefulWidget {
-  late final Future<List<JournalEntry>> _journalEntries;
 
-  HeadlineList({Key? key}) :
-        _journalEntries = Journal().journalEntries(),
-        super(key: key);
+  const HeadlineList({Key? key}) : super(key: key);
 
   @override
   State<HeadlineList> createState() => HeadlineListState();
 }
 
 class HeadlineListState extends State<HeadlineList> {
+  late Future<List<JournalEntry>> _journalEntries = Journal().journalEntries();
+
   @override
   void initState() {
     super.initState();
@@ -25,7 +25,7 @@ class HeadlineListState extends State<HeadlineList> {
   Widget build(BuildContext context) {
     // https://www.greycastle.se/reloading-future-with-flutter-futurebuilder/
     return FutureBuilder <List <JournalEntry>>(
-      future: widget._journalEntries,
+      future: _journalEntries,
       builder: (context, AsyncSnapshot<List<JournalEntry>> entries) {
         if (entries.connectionState != ConnectionState.done) {
           return const WelcomeWidget();}
@@ -45,7 +45,9 @@ class HeadlineListState extends State<HeadlineList> {
   }
 
   void loadJournal() async {
-    setState(() {});
+    setState(() {
+      _journalEntries = Journal().journalEntries();
+    });
   }
 }
 
@@ -58,17 +60,22 @@ class JournalHeadline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                journalEntry.title,
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              Text(journalEntry.date.toString().substring(0, 10)),
-            ]
+        child: InkWell(
+          onTap: () {
+            Navigator.pushNamed(context, '/view', arguments: journalEntry.id);
+          },
+          child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  journalEntry.title,
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                DateText(journalEntry.date),
+              ]
+          ),
         ),
       ),
     );
