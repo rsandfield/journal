@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:journal/db/journal.dart';
-import 'package:journal/main.dart';
 import 'package:journal/widgets/confirm_action.dart';
+import 'package:journal/widgets/journal_app.dart';
 import 'package:journal/widgets/journal_headlines.dart';
 
 class OptionsWidget extends StatelessWidget {
