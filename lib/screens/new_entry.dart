@@ -18,6 +18,7 @@ class JournalEntryAddScreen extends StatelessWidget {
     return JournalScaffold(
       back: true,
       title: const Text("New Journal Entry"),
+      headlines: headlines,
       child: JournalForm(headlines: headlines),
     );
   }
@@ -46,7 +47,7 @@ class _JournalFormState extends State<JournalForm> {
             onSaved: (value) {journalEntry['title'] = value ?? "";},
             validator: (value) {
               if(value == null || value.isEmpty) {
-                return "Title";
+                return "Title cannot be blank";
               }
               return null;
             },
@@ -80,7 +81,10 @@ class _JournalFormState extends State<JournalForm> {
             decoration: const InputDecoration(labelText: "Text"),
             validator: (value) {
               if(value == null || value.isEmpty) {
-                return "Text";
+                return "Body cannot be blank";
+              }
+              if(value.length > 1470) {
+                return "Body too long";
               }
               return null;
             },
@@ -91,6 +95,7 @@ class _JournalFormState extends State<JournalForm> {
             onPressed: () {
               if(_formKey.currentState?.validate() ?? false) {
                 _formKey.currentState?.save();
+                print(journalEntry['body'].length);
                 Journal().insertJournalEntry(JournalEntry.fromMap(journalEntry));
                 widget.headlines.currentState?.loadJournal();
                 Navigator.of(context).pop();

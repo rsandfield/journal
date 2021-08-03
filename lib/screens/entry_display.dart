@@ -20,6 +20,7 @@ class JournalEntryDisplayScreen extends StatelessWidget {
     return JournalScaffold(
       back: true,
       title: const Text("View Journal Entry"),
+      headlines: headlines,
       child: JournalEntryDisplay(
         id: args,
         headlines: headlines,
@@ -76,8 +77,8 @@ class JournalEntryDisplay extends StatelessWidget {
                       context: context,
                       builder: (BuildContext context) =>
                           ConfirmAction(
-                              name: "Delete",
-                              entry: journalEntry,
+                              name: "Delete " + journalEntry.title,
+                              actionText: "delete this journal entry",
                               action: () {
                                 Journal().deleteJournalEntry(journalEntry)
                                     .then((_) {

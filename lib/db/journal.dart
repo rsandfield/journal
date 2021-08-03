@@ -79,4 +79,11 @@ class Journal {
       whereArgs: [entry.id],
     );
   }
+  
+  Future<void> dropTable() async {
+    final db = await database;
+    String drop = await rootBundle.loadString('assets/drop_table.txt');
+    print(drop);
+    await db.execute(drop);
+  }
 }

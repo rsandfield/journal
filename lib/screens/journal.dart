@@ -24,7 +24,7 @@ class _JournalScreenState extends State<JournalScreen> {
         actions: const [OptionsOpenWidget()],
       ),
       body: _buildLayout(context),
-      endDrawer: const OptionsWidget(),
+      endDrawer: OptionsWidget(headlines: widget.headlines,),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/create');

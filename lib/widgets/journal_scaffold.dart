@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:journal/widgets/journal_headlines.dart';
 import 'package:journal/widgets/options.dart';
 
 class JournalScaffold extends StatelessWidget {
   final bool back;
   final Text title;
+  final GlobalKey<HeadlineListState> headlines;
   final Widget child;
+
   const JournalScaffold({
     required this.title,
+    required this.headlines,
     required this.child,
     this.back = false,
     Key? key
@@ -25,7 +29,7 @@ class JournalScaffold extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: child,
       ),
-      endDrawer: const OptionsWidget(),
+      endDrawer: OptionsWidget(headlines: headlines,),
     );
   }
 }

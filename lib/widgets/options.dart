@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:journal/db/journal.dart';
 import 'package:journal/main.dart';
+import 'package:journal/widgets/confirm_action.dart';
+import 'package:journal/widgets/journal_headlines.dart';
 
 class OptionsWidget extends StatelessWidget {
-  const OptionsWidget({Key? key}) : super(key: key);
+  final GlobalKey<HeadlineListState> headlines;
+
+  const OptionsWidget({required this.headlines, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Drawer(
+    return Drawer(
       elevation: 1,
-      child: ThemeModeSelectWidget()
+      child: ThemeModeSelectWidget(headlines: headlines,)
     );
   }
 }
@@ -30,8 +35,10 @@ class OptionsOpenWidget extends StatelessWidget {
 
 
 class ThemeModeSelectWidget extends StatefulWidget {
+  final GlobalKey<HeadlineListState> headlines;
 
-  const ThemeModeSelectWidget({Key? key}) : super(key: key);
+  const ThemeModeSelectWidget({required this.headlines, Key? key}) :
+        super(key: key);
 
   @override
   _ThemeModeSelectWidgetState createState() => _ThemeModeSelectWidgetState();
@@ -73,6 +80,8 @@ class _ThemeModeSelectWidgetState extends State<ThemeModeSelectWidget> {
               isSelected: _isSelected,
               onPressed: (int index) => _buttonPressed(index)
             ),
+            const SizedBox(height: 30,),
+            DropTable(headlines: widget.headlines),
           ],
         ),
       ),
@@ -91,5 +100,40 @@ class _ThemeModeSelectWidgetState extends State<ThemeModeSelectWidget> {
         appState?.themeMode = ThemeMode.dark;
       }
     });
+  }
+}
+
+class DropTable extends StatelessWidget {
+  final GlobalKey<HeadlineListState> headlines;
+
+  const DropTable({required this.headlines, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+            "Drop table:",
+            style: Theme.of(context).textTheme.headline6
+        ),
+        IconButton(
+            onPressed: () => dropTable(context),
+            icon: const Icon(Icons.delete),
+        )
+      ],
+    );
+  }
+
+  void dropTable(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) =>
+          ConfirmAction(
+              name: "Drop Table",
+              actionText: "drop the entire table",
+              action: () => Journal().dropTable()
+                    .then((_) => headlines.currentState?.loadJournal()),
+          )
+    );
   }
 }
